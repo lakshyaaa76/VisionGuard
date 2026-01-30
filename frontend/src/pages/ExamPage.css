@@ -1,0 +1,36 @@
+.exam-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.exam-header {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.exam-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.timer {
+  font-size: 1.25rem;
+  font-weight: 500;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.exam-content {
+  width: 100%;
+  max-width: 800px;
+}
+
+.exam-footer {
+  margin-top: 2rem;
+}

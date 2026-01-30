@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --background-color: #F8F9FB;
+  --primary-text-color: #1F2937;
+  --secondary-text-color: #6B7280;
+  --border-color: #E5E7EB;
+
+  --status-cleared: #10B981; /* Green */
+  --status-review: #F59E0B;   /* Amber */
+  --status-invalidated: #EF4444; /* Red */
+
+  --primary-button-bg: #4F46E5;
+  --primary-button-text: #FFFFFF;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+  color: var(--primary-text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}

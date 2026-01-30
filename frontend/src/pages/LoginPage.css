@@ -1,0 +1,26 @@
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.error-message {
+  color: var(--status-invalidated);
+  text-align: center;
+  margin-bottom: 1rem;
+}

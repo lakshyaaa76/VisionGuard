@@ -1,0 +1,18 @@
+.review-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.question-details,
+.answer-details,
+.scoring-details {
+  margin-bottom: 1rem;
+}
+
+.score-input-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}

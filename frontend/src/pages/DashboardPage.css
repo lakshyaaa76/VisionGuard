@@ -1,0 +1,26 @@
+.exam-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.exam-item-card {
+  padding: 1.5rem;
+}
+
+.exam-item-card h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.exam-item-card p {
+  color: var(--secondary-text-color);
+  margin-bottom: 1.5rem;
+}
+
+.exam-item-card a {
+  text-decoration: none;
+}

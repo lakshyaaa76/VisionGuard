@@ -1,0 +1,25 @@
+.exam-management-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.exam-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.exam-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.error-message {
+  color: var(--status-invalidated);
+  margin-bottom: 1rem;
+}
+
+.admin-table .button-group {
+  display: flex;
+  gap: 0.5rem;
+}

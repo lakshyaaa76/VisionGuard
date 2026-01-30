@@ -1,0 +1,43 @@
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.admin-table th, .admin-table td {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.admin-table th {
+  background-color: #F9FAFB;
+  font-weight: 600;
+  color: var(--secondary-text-color);
+  text-transform: uppercase;
+  font-size: 0.875rem;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table td .button-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px;
+}
