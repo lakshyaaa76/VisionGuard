@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import evaluationService from '../services/evaluationService';
 import MainLayout from '../components/common/MainLayout';
@@ -13,7 +13,7 @@ const SubjectiveReviewPage = () => {
   const [loading, setLoading] = useState(true);
   const [scores, setScores] = useState({});
 
-  const fetchSessionDetails = async () => {
+  const fetchSessionDetails = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       const data = await evaluationService.getSessionForManualEvaluation(id, token);
@@ -22,11 +22,11 @@ const SubjectiveReviewPage = () => {
       console.error('Failed to fetch session details', error);
     }
     setLoading(false);
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchSessionDetails();
-  }, [id]);
+  }, [fetchSessionDetails]);
 
   const handleScoreChange = (responseId, value) => {
     setScores({ ...scores, [responseId]: value });
