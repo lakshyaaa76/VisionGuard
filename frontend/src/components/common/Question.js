@@ -1,4 +1,5 @@
 import React from 'react';
+import { Editor } from '@monaco-editor/react';
 import Textarea from './Textarea';
 import './Question.css';
 
@@ -31,11 +32,12 @@ const Question = ({ question, onResponseChange }) => {
         );
       case 'CODING':
         return (
-          <Textarea 
-            className="code-input"
-            onChange={(e) => onResponseChange(question._id, e.target.value)} 
-            placeholder="Write your code here..."
+          <Editor
+            height="300px"
+            language={question.language || 'javascript'}
+            theme="vs-dark"
             defaultValue={question.boilerplate || ''}
+            onChange={(value) => onResponseChange(question._id, value)}
           />
         );
       default:

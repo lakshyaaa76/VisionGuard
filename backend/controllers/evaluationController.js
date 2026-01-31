@@ -1,6 +1,7 @@
 const ExamSession = require('../models/ExamSession');
 const Question = require('../models/Question');
 const Response = require('../models/Response');
+const { executeCode } = require('../services/judge0Service');
 const mongoose = require('mongoose');
 
 // @route   POST /admin/evaluate/:sessionId
@@ -40,7 +41,24 @@ exports.evaluateSession = async (req, res) => {
             response.score = question.marks;
             score += question.marks;
           }
-        } else if (question.questionType === 'SUBJECTIVE' || question.questionType === 'CODING') {
+        } else if (question.questionType === 'CODING') {
+          let questionScore = 0;
+          const marksPerTestCase = question.marks / question.testCases.length;
+          for (const testCase of question.testCases) {
+            try {
+              const result = await executeCode(response.answer, question.language, testCase.input);
+              // Trim whitespace from both outputs for a fair comparison
+              if (result.stdout.trim() === testCase.output.trim()) {
+                questionScore += marksPerTestCase;
+              }
+            } catch (err) {
+              console.error(`Error executing code for question ${question._id}:`, err);
+              // Decide if you want to penalize for code that doesn't run
+            }
+          }
+          response.score = questionScore;
+          score += questionScore;
+        } else if (question.questionType === 'SUBJECTIVE') {
           hasSubjective = true;
           response.markedForReview = true;
         }

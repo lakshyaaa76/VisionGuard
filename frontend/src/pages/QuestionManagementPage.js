@@ -21,6 +21,7 @@ const QuestionManagementPage = () => {
     marks: 1,
     language: 'javascript',
     boilerplate: '',
+    testCases: [{ input: '', output: '' }],
   });
 
   const fetchExamDetails = useCallback(async () => {
@@ -41,6 +42,21 @@ const QuestionManagementPage = () => {
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleTestCaseChange = (index, field, value) => {
+    const newTestCases = [...formData.testCases];
+    newTestCases[index][field] = value;
+    setFormData({ ...formData, testCases: newTestCases });
+  };
+
+  const addTestCase = () => {
+    setFormData({ ...formData, testCases: [...formData.testCases, { input: '', output: '' }] });
+  };
+
+  const removeTestCase = (index) => {
+    const newTestCases = formData.testCases.filter((_, i) => i !== index);
+    setFormData({ ...formData, testCases: newTestCases });
   };
 
   const onOptionChange = (index, value) => {
@@ -64,6 +80,7 @@ const QuestionManagementPage = () => {
         marks: 1,
         language: 'javascript',
         boilerplate: '',
+        testCases: [{ input: '', output: '' }],
       });
       fetchExamDetails(); // Refresh the list
     } catch (err) {
@@ -141,6 +158,25 @@ const QuestionManagementPage = () => {
                   <div className="form-group">
                     <label htmlFor="boilerplate">Boilerplate Code</label>
                     <Textarea id="boilerplate" name="boilerplate" value={formData.boilerplate} onChange={onChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Test Cases</label>
+                    {formData.testCases.map((testCase, index) => (
+                      <div key={index} className="test-case-item">
+                        <Input
+                          value={testCase.input}
+                          onChange={(e) => handleTestCaseChange(index, 'input', e.target.value)}
+                          placeholder={`Test Case ${index + 1} Input`}
+                        />
+                        <Input
+                          value={testCase.output}
+                          onChange={(e) => handleTestCaseChange(index, 'output', e.target.value)}
+                          placeholder={`Test Case ${index + 1} Output`}
+                        />
+                        <Button type="button" onClick={() => removeTestCase(index)} variant="danger">Remove</Button>
+                      </div>
+                    ))}
+                    <Button type="button" onClick={addTestCase} variant="secondary">Add Test Case</Button>
                   </div>
                 </>
               )}

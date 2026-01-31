@@ -21,6 +21,12 @@ const questionSchema = new mongoose.Schema({
   // For CODING
   language: { type: String },
   boilerplate: { type: String },
+  testCases: [
+    {
+      input: { type: String, required: true },
+      output: { type: String, required: true },
+    },
+  ],
   marks: {
     type: Number,
     required: true,

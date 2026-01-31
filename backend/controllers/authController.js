@@ -3,8 +3,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 
-const generateToken = (id, role) => {
-  return jwt.sign({ id, role }, process.env.JWT_SECRET, {
+const generateToken = (id, role, name) => {
+  return jwt.sign({ id, role, name }, process.env.JWT_SECRET, {
     expiresIn: '1d',
   });
 };
@@ -47,7 +47,7 @@ exports.register = async (req, res) => {
     await user.save();
 
     // Return jsonwebtoken
-    const token = generateToken(user.id, user.role);
+    const token = generateToken(user.id, user.role, user.name);
     res.json({ token });
 
   } catch (err) {
@@ -82,7 +82,7 @@ exports.login = async (req, res) => {
         return res.status(403).json({ msg: `User account is ${user.status}` });
     }
 
-    const token = generateToken(user.id, user.role);
+    const token = generateToken(user.id, user.role, user.name);
     res.json({ token });
 
   } catch (err) {
