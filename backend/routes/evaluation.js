@@ -1,26 +1,43 @@
 const express = require('express');
 const router = express.Router();
-const { evaluateSession, getSessionResult, getSessionForManualEvaluation, submitSubjectiveScore } = require('../controllers/evaluationController');
+const { 
+  evaluateSession, 
+  getSessionResult, 
+  getSessionForManualEvaluation, 
+  submitSubjectiveScore, 
+  finalizeEvaluation, 
+  getAllSessionsForEvaluation 
+} = require('../controllers/evaluationController');
 const { authenticateJWT, authorizeRoles } = require('../middleware/auth');
 
-// @route   POST /admin/evaluate/:sessionId
-// @desc    Evaluate an exam session
+// @route   GET /sessions
+// @desc    Get all submitted sessions for evaluation
 // @access  Private (ADMIN)
-router.post('/admin/evaluate/:sessionId', [authenticateJWT, authorizeRoles('ADMIN')], evaluateSession);
+router.get('/sessions', [authenticateJWT, authorizeRoles('ADMIN')], getAllSessionsForEvaluation);
 
-// @route   GET /exam/:sessionId/result
+// @route   POST /evaluate/:sessionId
+// @desc    Run initial auto-evaluation for a session
+// @access  Private (ADMIN)
+router.post('/evaluate/:sessionId', [authenticateJWT, authorizeRoles('ADMIN')], evaluateSession);
+
+// @route   GET /sessions/:sessionId
+// @desc    Get a specific session for manual evaluation
+// @access  Private (ADMIN)
+router.get('/sessions/:sessionId', [authenticateJWT, authorizeRoles('ADMIN')], getSessionForManualEvaluation);
+
+// @route   POST /response/:responseId
+// @desc    Submit a score for a single subjective response
+// @access  Private (ADMIN)
+router.post('/response/:responseId', [authenticateJWT, authorizeRoles('ADMIN')], submitSubjectiveScore);
+
+// @route   POST /finalize/:sessionId
+// @desc    Finalize the evaluation for a session after manual review
+// @access  Private (ADMIN)
+router.post('/finalize/:sessionId', [authenticateJWT, authorizeRoles('ADMIN')], finalizeEvaluation);
+
+// @route   GET /result/:sessionId 
 // @desc    Get the result of an exam session
 // @access  Private (ADMIN)
-router.get('/exam/:sessionId/result', [authenticateJWT, authorizeRoles('ADMIN')], getSessionResult);
-
-// @route   GET /admin/evaluation/:sessionId
-// @desc    Get session details for manual evaluation
-// @access  Private (ADMIN)
-router.get('/admin/evaluation/:sessionId', [authenticateJWT, authorizeRoles('ADMIN')], getSessionForManualEvaluation);
-
-// @route   POST /admin/evaluation/response/:responseId
-// @desc    Submit score for a subjective response
-// @access  Private (ADMIN)
-router.post('/admin/evaluation/response/:responseId', [authenticateJWT, authorizeRoles('ADMIN')], submitSubjectiveScore);
+router.get('/result/:sessionId', [authenticateJWT, authorizeRoles('ADMIN')], getSessionResult);
 
 module.exports = router;

@@ -92,6 +92,16 @@ exports.publishExam = async (req, res) => {
 // @route   GET /exams
 // @desc    Get all published exams
 // @access  Public
+exports.getPublishedExams = async (req, res) => {
+  try {
+    const exams = await Exam.find({ status: 'PUBLISHED' }).sort({ createdAt: -1 }).populate('questions');
+    res.json(exams);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
 // @route   GET /admin/exams
 // @desc    Get all exams (for admins)
 // @access  Private (ADMIN)
@@ -105,12 +115,6 @@ exports.getAllExams = async (req, res) => {
   }
 };
 
-// @route   POST /admin/exams/:id/archive
-// @desc    Archive an exam
-// @access  Private (ADMIN)
-// @route   PUT /admin/exams/:id
-// @desc    Update an exam
-// @access  Private (ADMIN)
 // @route   GET /admin/exams/:id
 // @desc    Get a single exam by ID
 // @access  Private (ADMIN)
@@ -127,6 +131,9 @@ exports.getExamById = async (req, res) => {
   }
 };
 
+// @route   PUT /admin/exams/:id
+// @desc    Update an exam
+// @access  Private (ADMIN)
 exports.updateExam = async (req, res) => {
   try {
     const exam = await Exam.findById(req.params.id);
@@ -146,6 +153,26 @@ exports.updateExam = async (req, res) => {
     );
 
     res.json(updatedExam);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+// @route   POST /admin/exams/:id/archive
+// @desc    Archive an exam
+// @access  Private (ADMIN)
+exports.archiveExam = async (req, res) => {
+  try {
+    const exam = await Exam.findById(req.params.id);
+    if (!exam) {
+      return res.status(404).json({ msg: 'Exam not found' });
+    }
+
+    exam.status = 'ARCHIVED';
+    await exam.save();
+
+    res.json(exam);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -176,29 +203,4 @@ exports.unarchiveExam = async (req, res) => {
   }
 };
 
-exports.archiveExam = async (req, res) => {
-  try {
-    const exam = await Exam.findById(req.params.id);
-    if (!exam) {
-      return res.status(404).json({ msg: 'Exam not found' });
-    }
 
-    exam.status = 'ARCHIVED';
-    await exam.save();
-
-    res.json(exam);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-};
-
-exports.getPublishedExams = async (req, res) => {
-  try {
-    const exams = await Exam.find({ status: 'PUBLISHED' }).sort({ createdAt: -1 }).populate('questions');
-    res.json(exams);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-};

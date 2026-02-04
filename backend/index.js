@@ -14,9 +14,9 @@ app.use(express.json({ extended: false }));
 
 // Define Routes
 app.use('/auth', require('./routes/auth'));
+app.use('/', require('./routes/evaluation'));
 app.use('/', require('./routes/exams'));
 app.use('/', require('./routes/examSession'));
-app.use('/', require('./routes/evaluation'));
 app.use('/', require('./routes/integrity'));
 app.use('/', require('./routes/proctor'));
 app.use('/', require('./routes/users'));

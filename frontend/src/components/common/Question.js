@@ -1,6 +1,7 @@
 import React from 'react';
 import { Editor } from '@monaco-editor/react';
 import Textarea from './Textarea';
+import Button from './Button';
 import './Question.css';
 
 const Question = ({ question, onResponseChange }) => {

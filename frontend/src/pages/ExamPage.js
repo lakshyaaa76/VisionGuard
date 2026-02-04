@@ -109,6 +109,7 @@ const ExamPage = () => {
     return () => clearInterval(timer);
   }, [timeLeft, handleSubmit, responses]);
 
+
   const handleResponseChange = (questionId, answer) => {
     dispatch({
       type: 'SET_RESPONSE',

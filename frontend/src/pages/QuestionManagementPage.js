@@ -22,6 +22,7 @@ const QuestionManagementPage = () => {
     language: 'javascript',
     boilerplate: '',
     testCases: [{ input: '', output: '' }],
+    functionName: '',
   });
 
   const fetchExamDetails = useCallback(async () => {
@@ -70,7 +71,22 @@ const QuestionManagementPage = () => {
     setError('');
     try {
       const token = localStorage.getItem('token');
-      await examService.addQuestionToExam(examId, formData, token);
+
+      // Construct payload based on question type
+      const { questionText, questionType, marks } = formData;
+      let payload = { questionText, questionType, marks };
+
+      if (questionType === 'MCQ') {
+        payload.options = formData.options;
+        payload.correctOption = formData.correctOption;
+      } else if (questionType === 'CODING') {
+        payload.language = formData.language;
+        payload.boilerplate = formData.boilerplate;
+        payload.testCases = formData.testCases;
+        payload.functionName = formData.functionName;
+      }
+
+      await examService.addQuestionToExam(examId, payload, token);
       // Reset form
       setFormData({
         questionText: '',
@@ -81,6 +97,7 @@ const QuestionManagementPage = () => {
         language: 'javascript',
         boilerplate: '',
         testCases: [{ input: '', output: '' }],
+        functionName: '',
       });
       fetchExamDetails(); // Refresh the list
     } catch (err) {
@@ -151,6 +168,10 @@ const QuestionManagementPage = () => {
 
               {formData.questionType === 'CODING' && (
                 <>
+                  <div className="form-group">
+                    <label htmlFor="functionName">Function Name</label>
+                    <Input id="functionName" name="functionName" value={formData.functionName} onChange={onChange} placeholder="e.g., sortArray" required />
+                  </div>
                   <div className="form-group">
                     <label htmlFor="language">Language</label>
                     <Input id="language" name="language" value={formData.language} onChange={onChange} />

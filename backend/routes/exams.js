@@ -29,4 +29,5 @@ router.post('/admin/exams/:id/unarchive', [authenticateJWT, authorizeRoles('ADMI
 // Public routes
 router.get('/exams', getPublishedExams);
 
+
 module.exports = router;

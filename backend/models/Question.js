@@ -19,6 +19,7 @@ const questionSchema = new mongoose.Schema({
   options: [{ type: String }],
   correctOption: { type: Number },
   // For CODING
+  functionName: { type: String }, // The name of the function to call for grading
   language: { type: String },
   boilerplate: { type: String },
   testCases: [

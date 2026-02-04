@@ -108,6 +108,7 @@ const publishExam = async (examId, token) => {
   return response.data;
 };
 
+
 const examService = {
   getPublishedExams,
   startExamSession,
@@ -119,7 +120,7 @@ const examService = {
   getExamById,
   addQuestionToExam,
   unarchiveExam,
-  publishExam,
+  publishExam
 };
 
 export default examService;

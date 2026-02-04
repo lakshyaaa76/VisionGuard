@@ -3,6 +3,7 @@
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   padding: 2rem;
+  margin-bottom: 2rem;
 }
 
 .question-text {
@@ -27,3 +28,4 @@
   font-family: monospace;
   min-height: 200px;
 }
+
