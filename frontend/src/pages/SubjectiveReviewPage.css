@@ -10,6 +10,23 @@
   margin-bottom: 1rem;
 }
 
+.text-answer {
+  white-space: pre-wrap;
+}
+
+.code-answer {
+  margin: 0.5rem 0 0;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  white-space: pre;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
 .score-input-group {
   display: flex;
   gap: 0.5rem;

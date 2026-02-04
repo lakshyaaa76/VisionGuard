@@ -67,7 +67,11 @@ const SubjectiveReviewPage = () => {
               </div>
               <div className="answer-details">
                 <strong>Candidate's Answer:</strong>
-                <p>{response.answer}</p>
+                {response.question.questionType === 'CODING' ? (
+                  <pre className="code-answer"><code>{response.answer}</code></pre>
+                ) : (
+                  <p className="text-answer">{response.answer}</p>
+                )}
               </div>
               <div className="scoring-details">
                 <p>Score: {response.score} / {response.question.marks}</p>

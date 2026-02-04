@@ -1,13 +1,9 @@
 const ExamSession = require('../models/ExamSession');
 const Question = require('../models/Question');
 const Response = require('../models/Response');
-const { executeCode } = require('../services/judge0Service');
 const mongoose = require('mongoose');
 
-// @route   POST /admin/evaluate/:sessionId
-// @desc    Evaluate an exam session
-// @access  Private (ADMIN)
-exports.evaluateSession = async (req, res) => {
+const evaluateSession = async (req, res) => {
   try {
     const session = await ExamSession.findById(req.params.sessionId)
       .populate({ 
@@ -41,24 +37,7 @@ exports.evaluateSession = async (req, res) => {
             response.score = question.marks;
             score += question.marks;
           }
-        } else if (question.questionType === 'CODING') {
-          let questionScore = 0;
-          const marksPerTestCase = question.marks / question.testCases.length;
-          for (const testCase of question.testCases) {
-            try {
-              const result = await executeCode(response.answer, question.language, testCase.input);
-              // Trim whitespace from both outputs for a fair comparison
-              if (result.stdout.trim() === testCase.output.trim()) {
-                questionScore += marksPerTestCase;
-              }
-            } catch (err) {
-              console.error(`Error executing code for question ${question._id}:`, err);
-              // Decide if you want to penalize for code that doesn't run
-            }
-          }
-          response.score = questionScore;
-          score += questionScore;
-        } else if (question.questionType === 'SUBJECTIVE') {
+        } else if (question.questionType === 'SUBJECTIVE' || question.questionType === 'CODING') {
           hasSubjective = true;
           response.markedForReview = true;
         }
@@ -83,10 +62,7 @@ exports.evaluateSession = async (req, res) => {
   }
 };
 
-// @route   GET /exam/:sessionId/result
-// @desc    Get the result of an exam session
-// @access  Private (ADMIN)
-exports.getSessionForManualEvaluation = async (req, res) => {
+const getSessionForManualEvaluation = async (req, res) => {
   try {
     const session = await ExamSession.findById(req.params.sessionId)
       .populate({
@@ -105,7 +81,7 @@ exports.getSessionForManualEvaluation = async (req, res) => {
   }
 };
 
-exports.submitSubjectiveScore = async (req, res) => {
+const submitSubjectiveScore = async (req, res) => {
   const { score } = req.body;
   try {
     const response = await Response.findById(req.params.responseId);
@@ -116,15 +92,13 @@ exports.submitSubjectiveScore = async (req, res) => {
     response.score = score;
     await response.save();
 
-    // Recalculate total score for the session
     const session = await ExamSession.findById(response.examSession).populate('responses');
-    const totalScore = session.responses.reduce((total, r) => total + r.score, 0);
+    const totalScore = session.responses.reduce((total, r) => total + (r.score || 0), 0);
     session.academicEvaluation.score = totalScore;
     
-    // Check if all subjective questions are scored
     const allReviewed = session.responses
       .filter(r => r.markedForReview)
-      .every(r => r.score > 0 || (r.score === 0 && r.markedForReview)); // Allows scoring 0
+      .every(r => r.score !== undefined);
 
     if (allReviewed) {
       session.academicEvaluation.reviewStatus = 'COMPLETED';
@@ -139,7 +113,7 @@ exports.submitSubjectiveScore = async (req, res) => {
   }
 };
 
-exports.getSessionResult = async (req, res) => {
+const getSessionResult = async (req, res) => {
   try {
     const session = await ExamSession.findById(req.params.sessionId);
 
@@ -157,4 +131,43 @@ exports.getSessionResult = async (req, res) => {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
+};
+
+const getAllSessionsForEvaluation = async (req, res) => {
+  try {
+    const sessions = await ExamSession.find({ status: 'SUBMITTED' })
+      .sort({ submittedTime: -1, updatedAt: -1, createdAt: -1 })
+      .populate('candidate', 'name email')
+      .populate('exam', 'title');
+    res.json(sessions);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+const finalizeEvaluation = async (req, res) => {
+    try {
+        const session = await ExamSession.findById(req.params.sessionId);
+        if (!session) {
+            return res.status(404).json({ msg: 'Session not found' });
+        }
+
+        session.academicEvaluation.reviewStatus = 'COMPLETED';
+        await session.save();
+
+        res.json({ msg: 'Evaluation finalized successfully.', evaluation: session.academicEvaluation });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+};
+
+module.exports = {
+  evaluateSession,
+  getSessionForManualEvaluation,
+  submitSubjectiveScore,
+  getSessionResult,
+  getAllSessionsForEvaluation,
+  finalizeEvaluation,
 };

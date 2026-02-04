@@ -9,14 +9,19 @@ import './AdminDashboardPage.css';
 
 const AdminDashboardPage = () => {
   const [sessions, setSessions] = useState([]);
+  const [visibleSessions, setVisibleSessions] = useState(10);
   const [loading, setLoading] = useState(true);
 
   const fetchSessions = async () => {
     try {
       const token = localStorage.getItem('token');
-      // Placeholder: A real implementation would have a dedicated admin endpoint.
-      const data = await adminService.getAllSessions(token);
-      setSessions(data);
+      const data = await evaluationService.getAllSessionsForEvaluation(token);
+      const sortedSessions = [...data].sort((a, b) => {
+        const aTime = a.submittedTime || a.updatedAt || a.createdAt;
+        const bTime = b.submittedTime || b.updatedAt || b.createdAt;
+        return new Date(bTime) - new Date(aTime);
+      });
+      setSessions(sortedSessions);
     } catch (error) {
       console.error('Failed to fetch sessions', error);
     }
@@ -33,7 +38,7 @@ const AdminDashboardPage = () => {
         const token = localStorage.getItem('token');
         await evaluationService.evaluateSession(sessionId, token);
         alert('Evaluation complete!');
-        fetchSessions();
+        fetchSessions(); // This will refresh the list of sessions
       } catch (error) {
         console.error('Failed to evaluate session', error);
         alert('Failed to evaluate session.');
@@ -57,43 +62,52 @@ const AdminDashboardPage = () => {
       {loading ? (
         <p>Loading sessions...</p>
       ) : sessions.length > 0 ? (
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Candidate</th>
-              <th>Exam</th>
-              <th>Integrity Verdict</th>
-              <th>Academic Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sessions.map((session) => (
-              <tr key={session._id}>
-                <td>{session.candidate.name}</td>
-                <td>{session.exam.title}</td>
-                <td><StatusBadge status={session.integrityEvaluation.verdict} /></td>
-                <td><StatusBadge status={session.academicEvaluation?.status || 'PENDING'} /></td>
-                <td>
-                  <div className="button-group">
-                    {session.academicEvaluation?.status !== 'COMPLETED' ? (
-                      <Button onClick={() => handleEvaluate(session._id)} variant="primary">Evaluate</Button>
-                    ) : (
-                      <Link to={`/session/result/${session._id}`}>
-                        <Button variant="secondary">View Result</Button>
-                      </Link>
-                    )}
-                    {session.academicEvaluation?.reviewStatus === 'PENDING' && (
-                      <Link to={`/admin/evaluation/${session._id}`}>
-                        <Button variant="primary">Review Answers</Button>
-                      </Link>
-                    )}
-                  </div>
-                </td>
+        <>
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Exam</th>
+                <th>Integrity Verdict</th>
+                <th>Academic Status</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {sessions.slice(0, visibleSessions).map((session) => (
+                <tr key={session._id}>
+                  <td>{session.candidate.name}</td>
+                  <td>{session.exam.title}</td>
+                  <td><StatusBadge status={session.integrityEvaluation.verdict} /></td>
+                  <td><StatusBadge status={session.academicEvaluation?.status || 'PENDING'} /></td>
+                  <td>
+                    <div className="button-group">
+                      {session.academicEvaluation?.status !== 'COMPLETED' ? (
+                        <Button onClick={() => handleEvaluate(session._id)} variant="primary">Evaluate</Button>
+                      ) : (
+                        <Link to={`/session/result/${session._id}`}>
+                          <Button variant="secondary">View Result</Button>
+                        </Link>
+                      )}
+                      {session.academicEvaluation?.reviewStatus === 'PENDING' && (
+                        <Link to={`/admin/evaluation/${session._id}`}>
+                          <Button variant="primary">Review Answers</Button>
+                        </Link>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {sessions.length > visibleSessions && (
+            <div className="load-more-container">
+              <Button onClick={() => setVisibleSessions(prev => prev + 5)} variant="secondary">
+                Show 5 More
+              </Button>
+            </div>
+          )}
+        </>
       ) : (
         <p>No submitted sessions found.</p>
       )}
