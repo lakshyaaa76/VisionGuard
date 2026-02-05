@@ -1,5 +1,6 @@
 const ExamSession = require('../models/ExamSession');
 const { validationResult } = require('express-validator');
+const { tryFinalizeSession } = require('../services/finalizationService');
 
 // @route   GET /proctor/sessions
 // @desc    Get all sessions requiring review
@@ -102,6 +103,10 @@ exports.submitVerdict = async (req, res) => {
             return res.status(404).json({ msg: 'Exam session not found' });
         }
 
+        if (session.finalStatus) {
+            return res.status(400).json({ msg: 'Session is already finalized' });
+        }
+
         const integrityStatus = session.integrity?.status || 'UNDER_REVIEW';
 
         if (integrityStatus === 'CLEARED' || integrityStatus === 'INVALIDATED') {
@@ -119,6 +124,7 @@ exports.submitVerdict = async (req, res) => {
           remarks,
         };
 
+        tryFinalizeSession(session);
         await session.save();
 
         res.json({ msg: 'Verdict submitted successfully', integrity: session.integrity });

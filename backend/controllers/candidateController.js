@@ -1,15 +1,9 @@
 const ExamSession = require('../models/ExamSession');
+const { tryFinalizeSession } = require('../services/finalizationService');
 
 const getCandidateStatus = (session) => {
-  if (session.integrity?.status === 'INVALIDATED') {
-    return 'INVALIDATED';
-  }
-  if (session.integrity?.status !== 'CLEARED') {
-    return 'UNDER_REVIEW';
-  }
-  if (session.academicEvaluation.status === 'COMPLETED' && session.academicEvaluation.reviewStatus !== 'PENDING') {
-    return 'EVALUATED';
-  }
+  if (session.finalStatus === 'INVALIDATED') return 'INVALIDATED';
+  if (session.finalStatus === 'EVALUATED') return 'EVALUATED';
   return 'UNDER_REVIEW';
 };
 
@@ -20,6 +14,16 @@ exports.getMySessions = async (req, res) => {
   try {
     const sessions = await ExamSession.find({ candidate: req.user.id })
       .populate('exam', 'title');
+
+    await Promise.all(
+      sessions.map(async (s) => {
+        if (s.finalStatus) return;
+        const changed = tryFinalizeSession(s);
+        if (changed) {
+          await s.save();
+        }
+      })
+    );
 
     const sessionsWithStatus = sessions.map(session => ({
       ...session.toObject(),
@@ -47,16 +51,28 @@ exports.getMySessionResult = async (req, res) => {
       return res.status(404).json({ msg: 'Session not found' });
     }
 
-    const candidateStatus = getCandidateStatus(session);
-
-    if (candidateStatus !== 'EVALUATED') {
-      return res.status(403).json({ msg: `Result is not available. Status: ${candidateStatus}` });
+    if (!session.finalStatus) {
+      const changed = tryFinalizeSession(session);
+      if (changed) {
+        await session.save();
+      }
     }
 
-    res.json({
-      score: session.academicEvaluation.score,
-      totalMarks: session.academicEvaluation.totalMarks,
-    });
+    const candidateStatus = getCandidateStatus(session);
+
+    if (candidateStatus === 'EVALUATED') {
+      return res.json({
+        finalStatus: 'EVALUATED',
+        score: session.academicEvaluation.score,
+        totalMarks: session.academicEvaluation.totalMarks,
+      });
+    }
+
+    if (candidateStatus === 'INVALIDATED') {
+      return res.json({ finalStatus: 'INVALIDATED' });
+    }
+
+    return res.json({ status: 'UNDER_REVIEW' });
 
   } catch (err) {
     console.error(err.message);

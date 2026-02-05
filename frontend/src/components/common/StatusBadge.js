@@ -6,6 +6,7 @@ const StatusBadge = ({ status }) => {
     switch (status) {
       // Exam/Session Statuses
       case 'CLEARED':
+      case 'EVALUATED':
       case 'ACTIVE':
       case 'PUBLISHED':
         return 'status-cleared';

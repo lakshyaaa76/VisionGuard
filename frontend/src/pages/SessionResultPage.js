@@ -54,10 +54,22 @@ const SessionResultPage = () => {
         {loading ? (
           <p>Loading result...</p>
         ) : result ? (
-          <div className="result-details">
-            <h2>Score</h2>
-            <p className="score">{result.score} / {result.totalMarks}</p>
-          </div>
+          result.finalStatus === 'EVALUATED' ? (
+            <div className="result-details">
+              <h2>Evaluated</h2>
+              <p className="score">{result.score} / {result.totalMarks}</p>
+            </div>
+          ) : result.finalStatus === 'INVALIDATED' ? (
+            <div className="result-details">
+              <h2>Invalidated</h2>
+              <p className="error-message">Result is not available.</p>
+            </div>
+          ) : (
+            <div className="result-details">
+              <h2>Under Review</h2>
+              <p className="error-message">Result is not available.</p>
+            </div>
+          )
         ) : (
           <p className="error-message">{error || 'Result not available.'}</p>
         )}

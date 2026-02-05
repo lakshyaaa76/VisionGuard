@@ -54,6 +54,11 @@ const ExamSessionSchema = new mongoose.Schema({
       default: 'NOT_REQUIRED',
     },
   },
+  finalStatus: {
+    type: String,
+    enum: ['EVALUATED', 'INVALIDATED'],
+    default: null,
+  },
   integrityEvents: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'IntegrityEvent',

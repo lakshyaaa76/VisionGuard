@@ -2,6 +2,7 @@ const ExamSession = require('../models/ExamSession');
 const Question = require('../models/Question');
 const Response = require('../models/Response');
 const mongoose = require('mongoose');
+const { tryFinalizeSession } = require('../services/finalizationService');
 
 const evaluateSession = async (req, res) => {
   try {
@@ -14,6 +15,10 @@ const evaluateSession = async (req, res) => {
 
     if (!session) {
       return res.status(404).json({ msg: 'Exam session not found' });
+    }
+
+    if (session.finalStatus) {
+      return res.status(400).json({ msg: 'Session is finalized' });
     }
 
     if (session.status !== 'SUBMITTED') {
@@ -51,6 +56,8 @@ const evaluateSession = async (req, res) => {
       status: 'COMPLETED',
       reviewStatus: hasSubjective ? 'PENDING' : 'COMPLETED',
     };
+
+    tryFinalizeSession(session);
 
     await session.save();
 
@@ -93,6 +100,9 @@ const submitSubjectiveScore = async (req, res) => {
     await response.save();
 
     const session = await ExamSession.findById(response.examSession).populate('responses');
+    if (session.finalStatus) {
+      return res.status(400).json({ msg: 'Session is finalized' });
+    }
     const totalScore = session.responses.reduce((total, r) => total + (r.score || 0), 0);
     session.academicEvaluation.score = totalScore;
     
@@ -103,6 +113,8 @@ const submitSubjectiveScore = async (req, res) => {
     if (allReviewed) {
       session.academicEvaluation.reviewStatus = 'COMPLETED';
     }
+
+    tryFinalizeSession(session);
 
     await session.save();
 
@@ -153,7 +165,13 @@ const finalizeEvaluation = async (req, res) => {
             return res.status(404).json({ msg: 'Session not found' });
         }
 
+        if (session.finalStatus) {
+            return res.status(400).json({ msg: 'Session is finalized' });
+        }
+
         session.academicEvaluation.reviewStatus = 'COMPLETED';
+
+        tryFinalizeSession(session);
         await session.save();
 
         res.json({ msg: 'Evaluation finalized successfully.', evaluation: session.academicEvaluation });
