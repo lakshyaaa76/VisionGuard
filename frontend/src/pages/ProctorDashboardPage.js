@@ -51,7 +51,10 @@ const ProctorDashboardPage = () => {
             <Card key={session._id} className="session-item">
               <h3>{session.exam.title}</h3>
               <p>Candidate: {session.candidate.name}</p>
-              <StatusBadge status={session.status === 'IN_PROGRESS' ? 'IN_PROGRESS' : session.integrityEvaluation.verdict} />
+              <StatusBadge status={session.integrity?.status || 'UNDER_REVIEW'} />
+              {(session.mlReview?.status === 'UNDER_REVIEW' || (session.mlReview?.state?.totalEvents || 0) > 0) && (
+                <div className="integrity-signal-indicator">Integrity Signal (ML event fired)</div>
+              )}
               <div className="button-group">
                 <Link to={`/proctor/review/${session._id}`}>
                   <Button variant="primary">Review</Button>

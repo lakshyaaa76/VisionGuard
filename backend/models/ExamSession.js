@@ -58,6 +58,39 @@ const ExamSessionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'IntegrityEvent',
   }],
+  integrity: {
+    status: {
+      type: String,
+      enum: ['UNDER_REVIEW', 'CLEARED', 'INVALIDATED'],
+      default: 'UNDER_REVIEW',
+    },
+    decidedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    decidedAt: {
+      type: Date,
+    },
+    remarks: {
+      type: String,
+    },
+  },
+  mlReview: {
+    status: {
+      type: String,
+      enum: ['AUTO_CLEARED', 'UNDER_REVIEW'],
+      default: 'AUTO_CLEARED',
+    },
+    updatedAt: {
+      type: Date,
+    },
+    lastSampleAt: {
+      type: Date,
+    },
+    state: {
+      type: Object,
+    },
+  },
   integrityEvaluation: {
     verdict: {
       type: String,

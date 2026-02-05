@@ -34,6 +34,12 @@
     margin-right: 0.5rem;
 }
 
+.admin-table td.integrity-remarks {
+  max-width: 320px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 .load-more-container {
     display: flex;
     justify-content: center;

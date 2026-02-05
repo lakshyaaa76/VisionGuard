@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# ML local env
+ml/venv/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -10,7 +10,7 @@ connectDB();
 
 // Init Middleware
 app.use(cors());
-app.use(express.json({ extended: false }));
+app.use(express.json({ extended: false, limit: '6mb' }));
 
 // Define Routes
 app.use('/auth', require('./routes/auth'));

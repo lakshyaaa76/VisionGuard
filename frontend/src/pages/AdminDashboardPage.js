@@ -69,6 +69,7 @@ const AdminDashboardPage = () => {
                 <th>Candidate</th>
                 <th>Exam</th>
                 <th>Integrity Verdict</th>
+                <th>Integrity Remarks</th>
                 <th>Academic Status</th>
                 <th>Actions</th>
               </tr>
@@ -78,7 +79,8 @@ const AdminDashboardPage = () => {
                 <tr key={session._id}>
                   <td>{session.candidate.name}</td>
                   <td>{session.exam.title}</td>
-                  <td><StatusBadge status={session.integrityEvaluation.verdict} /></td>
+                  <td><StatusBadge status={session.integrity?.status || session.integrityEvaluation?.verdict || 'UNDER_REVIEW'} /></td>
+                  <td className="integrity-remarks">{session.integrity?.remarks || session.integrityEvaluation?.remarks || '-'}</td>
                   <td><StatusBadge status={session.academicEvaluation?.status || 'PENDING'} /></td>
                   <td>
                     <div className="button-group">

@@ -2,6 +2,7 @@ import React, { useEffect, useReducer, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import examService from '../services/examService';
 import useIntegrityEvents from '../hooks/useIntegrityEvents';
+import useMlFrameSampling from '../hooks/useMlFrameSampling';
 import Button from '../components/common/Button';
 import Question from '../components/common/Question';
 import './ExamPage.css';
@@ -50,6 +51,7 @@ const ExamPage = () => {
 
   // ✅ Integrity events only activate AFTER session exists
   useIntegrityEvents(session ? session._id : null);
+  useMlFrameSampling(session ? session._id : null);
 
   const handleSubmit = useCallback(
     async (currentResponses) => {

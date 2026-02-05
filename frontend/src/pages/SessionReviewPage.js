@@ -97,7 +97,12 @@ const SessionReviewPage = () => {
               {session.integrityEvents.map((event) => (
                 <li key={event._id}>
                   <div className="event-item">
-                    <strong>{event.eventType}</strong> detected at {new Date(event.timestamp).toLocaleString()}
+                    <strong>{event.source === 'ML_SIGNAL' ? 'INTEGRITY_SIGNAL' : event.eventType}</strong> detected at {new Date(event.timestamp).toLocaleString()}
+                    {event.evidenceUrl && (
+                      <div>
+                        <a href={event.evidenceUrl} target="_blank" rel="noreferrer">View evidence</a>
+                      </div>
+                    )}
                   </div>
                 </li>
               ))}

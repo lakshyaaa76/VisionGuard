@@ -26,3 +26,10 @@
 .session-item-card a {
   text-decoration: none;
 }
+
+.integrity-signal-indicator {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #b45309;
+}

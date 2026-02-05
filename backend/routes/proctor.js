@@ -24,7 +24,7 @@ router.post('/proctor/verdict', [authenticateJWT, authorizeRoles('PROCTOR'), [
 
 // @route   POST /proctor/sessions/:id/terminate
 // @desc    Terminate an in-progress exam session
-// @access  Private (PROCTOR, ADMIN)
-router.post('/proctor/sessions/:id/terminate', [authenticateJWT, authorizeRoles('PROCTOR', 'ADMIN')], terminateSession);
+// @access  Private (PROCTOR)
+router.post('/proctor/sessions/:id/terminate', [authenticateJWT, authorizeRoles('PROCTOR')], terminateSession);
 
 module.exports = router;

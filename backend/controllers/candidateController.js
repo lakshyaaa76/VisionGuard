@@ -1,16 +1,16 @@
 const ExamSession = require('../models/ExamSession');
 
 const getCandidateStatus = (session) => {
-  if (session.integrityEvaluation.verdict === 'INVALIDATED') {
+  if (session.integrity?.status === 'INVALIDATED') {
     return 'INVALIDATED';
   }
-  if (session.integrityEvaluation.verdict === 'PENDING') {
-    return 'UNDER REVIEW';
+  if (session.integrity?.status !== 'CLEARED') {
+    return 'UNDER_REVIEW';
   }
   if (session.academicEvaluation.status === 'COMPLETED' && session.academicEvaluation.reviewStatus !== 'PENDING') {
     return 'EVALUATED';
   }
-  return 'SUBMITTED'; // Default status after submission but before evaluation is complete
+  return 'UNDER_REVIEW';
 };
 
 // @route   GET /candidate/sessions

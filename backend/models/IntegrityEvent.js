@@ -8,12 +8,20 @@ const integrityEventSchema = new mongoose.Schema({
   },
   eventType: {
     type: String,
-    enum: ['TAB_SWITCH', 'FOCUS_LOSS'],
+    enum: ['TAB_SWITCH', 'FOCUS_LOSS', 'NO_FACE', 'MULTIPLE_FACE', 'LOOKING_AWAY', 'POSE_UNAVAILABLE'],
     required: true,
+  },
+  source: {
+    type: String,
+    enum: ['CLIENT', 'ML_SIGNAL'],
+    default: 'CLIENT',
   },
   timestamp: {
     type: Date,
     default: Date.now,
+  },
+  evidenceUrl: {
+    type: String,
   },
   details: {
     type: Object,

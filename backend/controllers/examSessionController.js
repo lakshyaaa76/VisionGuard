@@ -44,6 +44,7 @@ exports.startExamSession = async (req, res) => {
           startTime,
           endTime,
           status: 'IN_PROGRESS',
+          integrity: { status: 'UNDER_REVIEW' },
         },
       },
       {
