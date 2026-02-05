@@ -52,7 +52,11 @@ const LoginPage = () => {
       <div className="login-card">
         <Card>
           <form className="login-form" onSubmit={onSubmit}>
-            <h1>System Login</h1>
+            <div className="login-brand">
+              <div className="login-brand-name">Invigilo</div>
+              <div className="login-brand-subtitle">Secure online proctoring</div>
+            </div>
+            <h1 className="login-title">System Login</h1>
             {error && <p className="error-message">{error}</p>}
             <div className="form-group">
               <Input

@@ -1,12 +1,44 @@
 .login-page {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #f7f8fa; /* optional but improves contrast */
+  background:
+    radial-gradient(1200px circle at 10% 10%, rgba(91, 78, 229, 0.26) 0%, rgba(91, 78, 229, 0) 58%),
+    radial-gradient(1000px circle at 90% 20%, rgba(0, 184, 217, 0.22) 0%, rgba(0, 184, 217, 0) 62%),
+    linear-gradient(180deg, #f9fbff 0%, #f4f6ff 45%, #f7f8fa 100%);
+  overflow: hidden;
+}
+
+.login-page::before {
+  content: '';
+  position: absolute;
+  inset: -20% -20% -20% -20%;
+  background:
+    radial-gradient(720px circle at 12% 72%, rgba(91, 78, 229, 0.32) 0%, rgba(91, 78, 229, 0) 62%),
+    radial-gradient(760px circle at 92% 74%, rgba(0, 184, 217, 0.28) 0%, rgba(0, 184, 217, 0) 64%),
+    radial-gradient(520px circle at 50% 18%, rgba(91, 78, 229, 0.18) 0%, rgba(91, 78, 229, 0) 62%);
+  filter: blur(10px);
+  transform: translateZ(0);
+  pointer-events: none;
+}
+
+.login-page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(rgba(30, 41, 59, 0.10) 1px, transparent 1px);
+  background-size: 18px 18px;
+  opacity: 0.22;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
 }
 
 .login-card {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 400px;
   padding: 2rem;                 /* ✅ key fix */
@@ -21,9 +53,30 @@
   flex-direction: column;
 }
 
-.login-form h1 {
+.login-brand {
   text-align: center;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.login-brand-name {
+  font-weight: 800;
+  font-size: 2rem;
+  letter-spacing: 0.4px;
+  background: linear-gradient(90deg, #5b4ee5 0%, #00b8d9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.login-brand-subtitle {
+  margin-top: 0.25rem;
+  font-size: 0.95rem;
+  color: var(--secondary-text-color);
+}
+
+.login-title {
+  text-align: center;
+  margin-bottom: 1.25rem;
   font-weight: 600;
 }
 

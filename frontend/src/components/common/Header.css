@@ -14,9 +14,13 @@
 }
 
 .header-logo {
-  font-weight: 600;
-  font-size: 1.25rem;
-  color: var(--primary-text-color);
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: 0.2px;
+  background: linear-gradient(90deg, #5b4ee5 0%, #00b8d9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   text-decoration: none;
 }
 
